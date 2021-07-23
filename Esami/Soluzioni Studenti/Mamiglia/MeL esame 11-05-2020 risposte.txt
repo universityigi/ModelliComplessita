@@ -1,0 +1,67 @@
+1>> Per n > 0, si consideri una ricorrenza T(n) il cui albero delle chiamate è binario completo (cioè, ogni nodo interno ha due figli e ciascun ramo ha la stessa lunghezza) ed n è il numero di foglie. Il lavoro compiuto in ciascun nodo dell’albero è pari a 1.
+1.1. Esprimere T(n) in forma chiusa attraverso la notazione Θ(n).
+1.2. Si determini il valore esatto di T(8) (albero con 8 foglie).
+> Quando l'albero é completo e le foglie sono n il numero dei nodi é pari 2n-1, infatti il numero di nodi é n + n/2 + n/4 + n/8 + ... che é la SOMM_0_logn_(n/2^i). Theta(T(n)) = Theta(n)
+T(8) = 15
+
+2>> Definire le classi P e NP e indicare le relazioni di contenimento fra le classi. Illustrare la rilevanza pratica della questione P =? NP.
+> Le classi P e NP sono classi di complessitá di problemi. I problemi che appartengono a P sono quelli risolvibili in tempo polinomiale da un sistema di calcolo Turing-equivalente deterministico, mentre NP sono quei problemi risolvibili in tempo polinomiale da un sitema di calcolo non deterministico, tipo macchina di Turing non-deterministica. É ovvio che P é contenuto in NP, perché la deterministicitá é solo un caso specifico della non-deterministicitá. Ma la vera domanda é se a sua volta NP sia contenuto a sua volta in P, cioé se P = NP, infatti al momento non esiste alcuna dimostrazione sull'argomento. Se P = NP significa che molti problemi complessi in realtá si possono risolvere piú efficientemente e sono in realtá meno complessi di come appaiono, al contrario se P contenuto strettamente in NP allora avremmo dimostrato che la non-deterministicitá di un sistema di calcolo raggiunge effettivamente una potenza computazionale di un livello superiore a quella deterministica
+
+3>> Con riferimento al problema SAT in cui, data una formula booleana con variabili logiche che possono essere affermate o negate occorre stabilire se la formula sia soddisfacibile o meno, si mostri che esso appartienealla classe NP.
+> Il problema SAT appartiene alla classe NP se posso dimostrare con un algoritmo non-deterministico che esso si puó risolve in modo non polinomiale. 
+Sia  x = choose(true, false) la funzione non deterministica che assegna ad x il valore non-deterministico true o false, in maniera tale che la funzione possa non-deterministicamente scegliere uno di questi valori (o forse sarebbe meglio dire "non scegliere"). L'algoritmo sceglie uno per volta i valori delle variabili del SAT e in un tempo O(n) non deterministico ha trovato una soluzione (se esiste).
+
+4>> Nell’analisi di complessità e, in particolare nella notazione O(), si ignorano le costanti moltiplicative e additive. Discutere questa scelta indicandone vantaggi e svantaggi.
+> Sebbene lo svantaggio sia la perdita di precisione, in quanto potremmo avere due algoritmi O(n) che sebbene abbiano la stessa complessitá computazionale non sono per forza computazionalmente identici (caso bubbleSort e QuickSort), i vantaggi sono un confronto molto piú semplice tra vari algoritmi nel caso generale e soprattutto per quello che davvero conta: come questi si comportano nel caso peggiore qunaod l'input é molto grande. Tanto comunque anche se fossero assolutamente esatti il nostro modello di calcolo sulle operazioni atomiche non é esatto quindi comunque non significa che se un algoritmo A avesse complessitá 2n^3 + 5n -6 allora potrei dire che corrisponde con esattezza a un tot di tempo esatto di eseczione. Inoltre quello che conta davvero é il confronto per input molto larghi, e le differenze davvero apprezzabili non stanno nelle costanti moltiplicative ne additive
+
+
+5>> Si consideri il seguente programma incompleto per risolvere della più lunga sottosequenza comune di due con la tecnica della programmazione dinamica. Completare il programma nei punti indicati con “.....”
+Input: Stringhe X e Y con n e m elementi, rispettivamente
+Output: Matrice L, tale che, per i = 0,...,n-1 e j = 0,...,m-1, L[i, j] memorizza la lunghezza della stringa più lunga che è sottosequenza sia della stringa X[0..i] = x0x1x2...xi che della stringa Y [0..j] = y0y1y2...yj
+for i =1 to n-1 do
+	L[i,-1] = 0
+for j =0 to m-1 do
+	L[-1,j] = 0
+for i =0 to n-1 do
+	for j =0 to m-1 do
+		if xi = yj then
+			L[i, j] = ......
+		else
+			L[i, j] = ......
+
+return array L
+> 
+if xi = yj then
+	L[i, j] = L[i-1, j-1] + 1;
+else
+	L[i, j] = 0 
+La programmazione dinamica é un paradigma di programmazione in cui invece che scomporre il problema in tanti sottoproblemi indipendenti tra loro (tipo mergesort), tutti i sottoproblemi dipendono da quello venuto prima e si appoggiano ad essi, ad esempio accade spesso con la ricorsione. 
+
+
+6>> Costruire un automa a stati finiti (deterministico o non-deterministico) che riconosce le stringhe
+appartenenti al linguaggio costituito da tutte e sole le stringhe binarie contenenti almeno due simboli 1 adiacenti e almeno un simbolo 0 (in qualunque posizione, cioè possiamo avere prima la stringa 11 e poi uno 0, o viceversa).
+> (11|0)*(110|011)(11|0)*
+
+7>> Sia data la grammatica con insieme dei simboli non terminali N = {S, T}, insieme simboli terminali T = {a, b, c}, assioma S e produzioni specificate nel seguito:
+S ➝ aSc | aTc | ac | bc
+T ➝ bTc | bc
+7.1. Fornire un albero di derivazione della stringa aabbbccccc;
+7.2. Di quale tipo è tale grammatica nella gerarchia di Chomsky?
+7.3. Specificare (descrivere con notazione insiemistica) il linguaggio generato dalla grammatica.
+> foto
+> tipo 2: A->alpha
+> L = { a^n b^m c^(n+m) | n>0, m>=0 apparenenti a N}
+
+8>> Definire il concetto di grammatica ambigua e discutere se la grammatica fornita nell’esercizio precedente è ambigua o no.
+> no, la grammatica non é ambigua. Una grammatica si definisce ambigua se esistono due diversi alberi di derivazione per derivare la stessa stringa. 
+
+8>> Si costruisca una grammatica LL(1) per il linguaggio {a^n, n ≥ 1}.
+> 
+S -> aA
+A -> aA  | lambda
+
+
+
+
+
+	

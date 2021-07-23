@@ -1,0 +1,341 @@
+>> Enunciare e discutere la tesi di Church-Turing, chiarendo perché viene formulata come tesi e non come 
+teorema.
+La tesi di Church-Turing afferma che tutti i sistemi di calcolo sono equipotenti per quello che possono calcolare, cioé che ogni sistema di calcolo ha la capacitá di calcolare le stesse cose (anche se in tempi diversi magari). In particolare i creatori fanno riferimento alla Turing Machine e al lambda-calcolo che appunto sono dimostrati come equipotenziali. Successivamente ogni sistema di calcolo immaginato e creato ha rispettato questa congettura (ogni linguaggio di programmazione anche moderno, le macchine RAM, le macchine di Von Neumann), quindi é probabile che sia giusta. Tuttavia non é ancora mai stata dimostrata ed é per questo che viene formulata come tesi
+
+>> Definire le classi: P, NP e indicare le relazioni di contenimento fra le classi 
+P é la classe dei problemi risolubili in tempo polinomiale da macchine di Turing deterministiche mentre NP é la classe di problemi risolubili in tempo polinomiale da macchine di Turing NON-deterministiche. É chiaro che P sia contenuto in NP, perché la MdT deterministica non é altro che un caso speciale di una MdT non deterministica. Tuttavia la vera domanda é se P=NP, cioé se ci sono o meno problemi NP che non appartengono a P. Sebbene é probabile che NP sia piú grande di P questo non é stato ancora dimostrato, e quindi permane il dubbio tra P c NP e P = NP. Sostanzialmente questo dilemma si chiede se la Non-deterministicitá di un sistema di calcolo aggiunga potenza computazionale o meno. 
+
+>> Definire la classe dei problemi NP-completi e indicare le relazioni di contenimento rispetto alle classi P e NP
+Si definiscono NP-hard quei problemi che sono complessi di piú o uguali del piú complesso problema NP. Gli NP-completi sono allora NP-hard intersezione NP, cioé appunto i problemi piú complessi della classe NP. La caratteristica di questi problemi é che tutti si possono ridurre uno all'altro, quindi se ne dovesse essere risolto anche solo uno con un algoritmo polinomiale deterministico, allora automaticamente avremmo una soluzione per tutti gli altri problemi di questa classe. Inoltre essendo questi i problemi NP piú complessi della loro classe avremmo anche automaticamente dimostrato che P = NP. Per ora, assumendo che P c NP, NP-complete é un insieme disgiunto da P contenuto in NP intersezione NP-hard.
+
+>> Indicare un possibile risultato che permetterebbe di stabilire che P ≠ NP
+?? Basterebbe trovare un singolo problema NP che si dimostra non risolubile in tempo polinomiale da una MdT deterministica
+
+>> Indicare un possibile risultato che permetterebbe di stabilire che P = NP
+Come scritto nella domanda sopra-sopra, una possibile dimostrazione potrebbe essere quella di dimostrare che anche solo uno dei problemi NP-complete é risolubile in tempo polinomiale
+
+>> Per dimostrare che un problema A è NP-completo cosa è necessario dimostrare?
+Che é riducibile ad un altro problema NP-completo
+
+>> Definire il problema della soddisfacibilità di una formula logica e cosa è una formula in forma normale 
+congiuntiva (CNF). A quale classe di complessità temporale appartiene il problema della soddisfacibilità di 
+una formula CNF?
+Una formula é soddisfacibile se esiste una combinazione dei valori delle variabili che la compongono tale che essa risulti vera. Si definiscono problemi SAT e sono problemi della classe NP-complete. Una formula CNF é una nella forma (C1 OR C2 OR C3 OR ..) AND (A1 OR ..) AND (B1 OR ..) AND .. cioé una serie di clause formate da solo OR congiunte con la preposizione AND. Se ci dovessero essere negativizzazione queste vanno messe attaccate al simbolo e non fuori dalle parentesi. Questo tipo di problemi si risolve in tempo peggiore 2^n con l'algoritmo DPLL che sfrutta la forma e il backtracking per funzionare piú efficientemente di altri.
+
+>> Definire il problema della soddisfacibilità di una formula logica e cosa è una formula in forma normale 
+congiuntiva (DNF). A quale classe di complessità temporale appartiene il problema della soddisfacibilità di 
+una formula DNF? 
+La forma normal disgiuntiva é una forma logica per la quale le clausole sono separate da OR (invece che AND) e all'interno sono legate da AND (invece che OR) tipo: (A AND B AND C) OR (-D AND F AND B) OR ...
+La sua risoluzione puó avvenire in tempo polinomiale (infatti basta risolvere una singola clause per risolverle tutto). Il punto é che al momento non é conosciuto un algoritmo che converte una forma CNF in una DNF in tempo polinomiale (solo esponenziale), quindi il SAT di una CNF non puó essere polinomialmente ridotto ad una DNF e quindi DNF appartiene a P e CNF a NP.
+
+>> Nel caso di problemi NP-completi non rinunciamo a cercare soluzioni. Illustrare un possibile approccio per il 
+problema della soddisfacibilità di formule logiche
+DPLL é un ottimo algoritmo usato per il problema SAT quando questo é in forma CNF { (A OR B OR C) AND (D OR F OR -A) AND .. }. Esso sfrutta il principio del backtracking per trovare una soluzione, piú una serie di regole euristiche per migliorare l'algortitmo:
+- Unit propagation: É il principio per il quale se una variabile sta da sola in una parentesi allora quella parentesi si puó rendere vera se la variabile é settata a true (o false se la variabile é negata).
+- Pure-literal elimination: se una variabile appare in tutta la formula sempre positiva (o sempre negata) allora basta settarla a true (o false se negata) per ottenere il risultato ottimale.
+Infine la scelta di quale variabile esaminare di volta in volta (pickVar()) é molto importante, ma cambia di implementazion in implementazione.
+L'algoritmo sará :
+function DPLL(F) {
+	if (F.hasOnlyPureLiterals()) return true;
+	if (F.hasEmptyClause()) return false;
+	for var in F.pureLiterals() :
+		var.setRight();
+		var.removeFromClause();
+	for var in F.unitClauses() :
+		var.setRight();
+		var.removeFromClause();
+
+	x = pickVar(F);
+	return DPLL(F (x.setTrue()) || DPLL(F (x.setFalse());
+Esso appunto prova prima settando la variabile a true e se non dovesse funzionare prova con il false. I tentativi fatti si possono rappresentare benissimo con un albero binario. 
+
+>> Nel caso di problemi di ottimizzazione che sono difficili (cioè la versione come problema di riconoscimento 
+è NP-completo) non rinunciamo a cercare soluzioni buone anche se non sempre ottime. Illustrare un 
+possibile approccio per il problema per un problema a vostra scelta.
+???
+
+>> Illustrare una riduzione – a vostra scelta - che mostra che un problema A è NP-completo
+3SAT é un problema in cui le clause sono composte sempre da 3 variabili. Esso si puó facilmente ridurre a SAT (non bisogna far nulla é giá apposto) e SAT si puó ridurre a 3SAT con questo algoritmo, per ogni clause di dimensione k:
+- se k = 1: la clause (A) diventa (A OR Y OR Z) AND (A OR -Y OR Z) AND (A OR Y OR -Z) AND (A OR -Y OR -Z)
+- se k=2: la clause (A OR B) diventa (A OR B OR Y) AND (A OR B OR -Y)
+- se k>3: la clause (A1 OR A2 OR A3 OR .. OR An) diventa 
+	(A1 OR A2 OR Y1) AND (-Y1 OR A3 OR Y2) AND .. (-Yi-2 OR Ai OR Yi-1) .. AND (Yn-1 OR An-1 OR An)
+questa trasformazione avviene in tempo polinomiale e quindi 3SAT é NP-complete
+
+
+>> Per mostrare che un problema B è NP-difficile è sufficiente fornire una riduzione da un problema A a B. 
+Quali proprietà deve verificare A e quali deve verificare la riduzione? 
+A deve essere NP-difficile e la riduzione deve avvenire con una funzione f che deve essere polinomiale
+
+>> Descrivere le fasi di analisi lessicale e di analisi sintattica di un compilatore; per ciascuna delle due fasi 
+descrivi l’input e l’output e come viene elaborato il programma.
+L'analisi lessicale verifica che tutti i lessemi siano corretti e scompone il codice in token, per farlo si usano Automi a stati finiti, grammatiche di tipo 3 o espressioni regolari (tutti equivalenti). L'analisi sintattica invece cerca di intuire la sintassi del programma, la struttura e quello che i token ottenuti prima dovrebbero fare quando messi insieme. Si utilizzano grammatiche di tipo 2 (e pile?)
+
+>> Illustrare la gerarchia di Chomsky delle grammatiche; indicare per ciascuna categoria la 
+proprietà/caratteristica a vostro giudizio maggiormente rilevante.
+Tipo 0: grammatiche senza costrizioni di sorta
+Tipo 1: le produzione alpha -> beta devono avere lunghezza alpha < o uguale a lunghezza beta
+Tipo 2: Libere da contesto: A -> alpha, a sx ci deve essere un singolo simbolo terminale
+Tipo 3: regolari: A -> aB o A -> a, a dx ci deve essere un simbolo terminale e ci puó essere un simbolo non-terminale
+
+>> Descrivi l’algoritmo per eliminare le ricorsioni sinistre di una grammatica di tipo 2.
+Per ogni produzione del tipo A -> delta ==> A -> deltaA'
+Per ogni produzione del tipo A -> Aalpha ==> A' -> alphaA'
+E in piú A' -> epsilon
+
+>> Descrivere un analizzatore sintattico di tipo top-down
+Un analizzatore top-down parte dal simbolo iniziale S e prova a sviluppare fino alla stringa che si vuole riconoscere. Una tecnica naive sarebbe quella di implementare un backtracking in cui si va a tentativi, tuttavia questa avrebbe costo esponenziale. Una tecnica migliore é quella di implementare un parser predittivo modificando opportunamente una grammatica di tipo 2 (che abbia FIRST() disgiunti e niente ricorsioni sx) e usando una pila. Esso analizza la il carattere affiorante e sceglie come agire in base unicamente a quello, é per questo che le grammatiche LL(1) sono cosí efficienti nei parser
+
+>> Quali sono le proprietà di una grammatica LL(1) e per quale ragione sono la migliore scelta per descrivere i 
+linguaggi di programmazione.  
+Una grammatica si definisce LL(1) se permette di costruire un parser predittivo (privo di backtracking) che sceglie quale produzione applicare analizzando un singolo carattere per volta. Legge da sx a dx e produce derivazioni sinistre (da qui il nome). una grammatica per esserer LL(1) deve rispettare regole precise, deve essere di tipo 2, ma permettere lambda-produzioni, deve non avere ricorsioni sx, e i FIRST() (e FOLLOW() nel caso ci siano lambda) devono essere disgiunti per ogni simbolo terminale
+
+=====================================================================================================================
+
+>> Si considerino le seguenti espressioni regolari sull’alfabeto {a,b,c}:
+(1) R1= a (b | aa)* c
+(2) R2= abb (a | cc) (ab)*
+Per ciascuna costruire un automa a stati finiti deterministico o nondeterministico che riconosce il linguaggio 
+definito dall’espressione regolare
+foto
+
+>> Data una Grammatica regolare G, è possibile stabilire se G genera il linguaggio vuoto? Come?
+Basta verificare se nel suo automa rappresentativo c'é una lambda produzione che connette lo stato iniziale al finale
+
+>> Data una Grammatica regolare G, è possibile stabilire se G genera un linguaggio finito o infinito? Come? 
+Basta verificare se nell'automa che lo rappresenta ci sono cicli. Si ricorda che la conversione da G ad automa si fa che la funzione di transizione dell'automa, delta(stato, input) = nuovoStato, sia corrispondente alle produzioni X -> aY con: delta(X, a) = Y (si fa uno stato per ogni simbolo non terminale)
+
+>> Alice e Biagio discutono animatamente. Stanno esaminando una grammatica regolare G in cui VT è l'insieme 
+dei terminali, VN è l'insieme dei non terminali, S è l'assioma e P l'insieme delle produzioni (di tipo 3). Carla sta per fornire loro un ulteriore insieme di produzioni P', sempre di tipo 3, che tuttavia Alice e Bob non hanno ancora visto. Carla ha avvisato che P è anch'esso basato su VT e VN e che chiederà ad Alice e Biagio
+di esaminare la grammatica regolare G' in cui VT è l'insieme dei terminali, VN è l'insieme dei non terminali, S è l'assioma e l'insieme delle produzioni (di tipo 3) è l’unione di P e P’. 
+Siano L(G) e L(G’) i linguaggi generati da G e G’. Alice sostiene che L(G) contenuto in L(G') poiché l'introduzione di nuove produzioni potrebbe consentire di generare nuove stringhe, mentre Biagio pensa che L(G) contiene L(G') , dato che le nuove produzioni introdurranno restrizioni sulle possibilità di generazione
+Una produzione non introduce mai restrizioni, ma anzi le allarga sempre. Ha ragione Alice. Per esempio  prendiamo la grammatica A-> aB B -> b|bB essa produce stringhe ab*. Se aggiungessimo la produzione B -> bA allora la grammatica generebbe stringhe (ab*)* che sono molte di piú di quelle ab*. Quindi la tesi di Biagio é certamente falsa
+
+>> Per i seguenti linguaggi definisci un’espressione regolare o una grammatica regolare che li genera:
+(1) l’insieme delle stringhe binarie che contengono le stringhe 101 o 010 (o ambedue) come sottostringhe.
+(2) l’insieme delle stringhe binarie che contengono le stringhe 00 e 11 come sottostringhe.
+(3) l’insieme delle stringhe binarie che contengono la stringa 00 ma non la stringa 11 come sottostringhe. 
+(4) l’insieme delle stringhe binarie che contengono iniziano con 00 e finiscono con 11. 
+(5) l’insieme delle stringhe sull’alfabeto {x,y,z} in cui ogni x è immediatamente seguita da una y.
+(6) l’insieme delle stringhe sull’alfabeto {x,y,z} che contengono un numero dispari di y.
+1 - (1|0)* (101 | 010) (1|0)*
+	A -> 0T | 1X
+	T -> 1U	| 0T | 1X
+	U -> 0F | 1X
+	X -> 0Y | 1X | 0T
+	Y -> 1F | 0T
+	F -> 0F | 1F | lambda
+2 - (1|0)* (00(1|0)*11 | 11(1|0)*00) (1|0)*
+3 - (0|10)(10)*0(0|10)*(0|1|lambda)
+	A -> 0Z | 1U
+	U -> 0Z
+	Z -> 0F | 1U
+	F -> 0F | 1V | lambda
+	V -> 0F | lambda
+4 - 00 (0|1)* 11
+5 - (xy | y | z)*
+6 - (x|z)*y((x|z)*y(x|z)*y)*(x|z)*
+
+>> Sono dati M1 e M2, due automi a stati finiti che riconoscono i linguaggi L1 e L2 rispettivamente;
+(1) definire un automa M che riconosce il linguaggio L1 È L2 (formato dalle stringhe cha appartengono a 
+L1 o a L2 o a entrambi).
+
+(0)-> M1 -> (F)
+   -> M2 -> 
+l'automa risultante sará uno che partendo da uno stato iniziale 0 ha due lambda transizioni a M1 e a M2, che si ricongiungono in uno stato finale di accettazione
+
+>> Considera la seguente grammatica G (assioma S), con simboli terminali {a, b, c}: 
+S -> aAb | AE
+A -> aAbE | ab
+B -> AB |c 
+D -> AAcE
+E -> BA
+F -> FA | a
+(1) Identifica i simboli non terminali che non sono raggiungibili a partire dall’assioma. 
+(2) Trasforma la grammatica eliminando le produzioni inutili
+1 - D e F 
+2 - 
+S -> Ab | ABA
+A -> AbBA | ab
+B -> AB |c 
+
+>> Costruire un analizzatore sintattico predittivo a discesa ricorsiva per il linguaggio delle parentesi bilanciate, generato dalla grammatica S (assioma), simboli terminali ‘(‘ e ‘)’ e produzioni S-> (S)S | epsilon
+E’ possibile svolgere l’esercizio anche su una grammatica equivalente a quella data
+	| (	| )	| $	|
+_________________________________
+ S	| (S)S	| lambda|lambda |
+Questa é la tabella del parser. La grammatica é giá LL(1) e non va adattata ulteriormente.
+FIRST(S) = { '(', lambda } FOLLOW(S) = { $, ')' }
+
+>> Data la grammatica per il linguaggio delle parentesi bilanciate, generato dalla grammatica S (assioma), 
+simboli terminali ‘(‘ e ‘)’ e produzioni S->(S) S | epsilon dare l’albero di derivazione per la stringa     (()())()
+
+>> Si consideri la grammatica S -> aSbS | bSaS | lambda
+La grammatica è ambigua? Quanti differenti alberi di derivazione esistono per la sequenza abab ? Mostrare 
+le derivazioni sinistre e destre
+due diversi alberi => é ambigua
+
+>> Sia data la grammatica - assioma E, simboli nonterminali caratteri maiuscoli, simboli terminali 
+\+, -, *, /, (,),id 
+E-> TQ
+Q-> +TQ | -TQ | lambda
+T-> FR
+R-> *FR | /FR | lambda
+F-> (E) | id
+(a) Fornire l’albero di derivazione per le stringhe 
+	(1) id + ((id* id)- id) * id 
+	(2) ((id-id) /id) + (id –(id *id))
+(b) Questa grammatica è LL(1) ma la tabella di parsing non può essere calcolata usando solo i simboli 
+FIRST; spiegare perché.
+b - perché ci sono delle lambda produzioni, vanno quindi considerati i FOLLOW di quei simboli terminali che hanno tra i loro FIRST un lambda
+
+>> Dimostrare che la seguente grammatica
+S -> aB | aC | B 
+B -> bB | d 
+C -> B
+non è LL(1). Costruire una grammatica LL(1) equivalente alla precedente
+FIRST(S(1)) = a 
+FIRST(S(2)) = a
+La grammatica non é LL(1) perché le produzioni 1 e 2 hanno lo stesso simbolo iniziale, non é quindi possibile scegliere sulla base di quello = > non sono LL(1)
+S -> aB | B 
+B -> bB | d 
+
+===========================================================================================================================================
+
+>> Nell’analisi di complessità e, in particolare nella notazione O(), si ignorano le costanti moltiplicative e additive. Discutere questa scelta indicandone i vantaggi e gli svantaggi.
+Sebbene lo svantaggio sia la perdita di precisione, in quanto potremmo avere due algoritmi O(n) che sebbene abbiano la stessa complessitá computazionale non sono per forza computazionalmente identici (caso bubbleSort e QuickSort), i vantaggi sono un confronto molto piú semplice tra vari algoritmi nel caso generale e soprattutto per quello che davvero conta: come questi si comportano nel caso peggiore qunaod l'input é molto grande. Tanto comunque anche se fossero assolutamente esatti il nostro modello di calcolo sulle operazioni atomiche non é esatto quindi comunque non significa che se un algoritmo A avesse complessitá 2n^3 + 5n -6 allora potrei dire che corrisponde con esattezza a un tot di tempo esatto di eseczione. Inoltre quello che conta davvero é il confronto per input molto larghi, e le differenze davvero apprezzabili non stanno nelle costanti moltiplicative ne additive
+
+>> Cosa si intende quando diciamo che un algoritmo A è asintoticamente più efficiente dell’algoritmo B?
+1. A è sempre meglio di B per tutti gli input 
+2. A è sempre meglio di B per input di grandi dimensioni
+3. A è sempre meglio di B per input di piccole dimensioni
+4. B è sempre meglio di A per input di piccole dimensioni
+la risposta é la 2, guarda ad esempio il MergeSort O(n logn) e gli altri algoritmi di ordinamento con O(n^2) tipo bubble sort
+
+>> Verificare e motivare la correttezza o meno delle seguenti affermazioni.
+a) (n!) ∈ Ω (n^2)
+b) n^3/2 ∈ O(nlogn)
+c) 2^(log2 n) ∈ Θ(n)
+a -> vera, infatti lim (n!)/n^2 = inf. => é rispettata la definizione di Omega
+b -> false, lim (n^3/2)/nlogn = lim (n^1/2)/logn =Hopital= lim n / n^1/2 = inf.
+c -> true, 2^(log2 n) = n per definizione
+
+>> Spiega la validità della seguente espressione e illustrare la differenza fra costo di un programma e andamento asintotico rappresentato con la notazione O().
+	if f(n) <= g(n) then O(f(n) + g(n)) = O(g(n)).
+l'andamento asintotico di una funzione f(n)+g(n) é sempre determinato dall'addendo di grado piú alto, infatti  lim f(n)+g(n)/g(n) = 1 mentre lim f(n)+g(n)/f(n) = inf.
+
+>> Per n > 1, sia T(n) il numero esatto di esecuzioni del comando a = a + 2 nel seguente frammento codice:
+for i = 1 to n − 1 do
+	for j = n − i + 1 to n do
+		a = a + 2
+Utilizzando la notazione O() si esprima il costo di T(n) in funzione di n; si calcoli il valore esatto di T(n) per n=10.
+Il ciclo esterno é eseguito n-1 volte mentre il ciclo interno é eseguito i volte (aumenta di uno di volta in volta), la prima volta 0, la seconda 1 , la terza 2 ecc...
+T(n) = SOMM_1_n-1_(i) = (n-2)*(n-1)/2 (somma di Gauss)
+O(T(n)) = O(n^2)
+T(10) = 72/2 = 36
+
+>> ripeti per: 
+for (i = n / 2; i <= n; i++) {
+	for (j = 2; j <= n; j = j * 2) {
+		k = k + n / 2;
+il ciclo ext é eseguito n/2+1 volte, quello interno ha j che aumenta esponenzialmente tale che viene eseguito k volte fino a che 2^k  <= n cioé k <= log2 n. 
+T(n) = ((n+2)/2)*(log2 n)
+O(T(n)) = O(n logn)
+T(10) = 6 * log2 10
+
+>> Esprimere il costo asintotico dell’algoritmo usuale per la moltiplicazione di due numeri di n bit. Assumi che ciascuna operazione fra due bit abbia costo unitario.
+andranno fatte prima n^2 moltiplicazione e poi n addizioni => O(n^2)
+
+>> Quante operazioni sono necessarie con l’usuale algoritmo per eseguire la moltiplicazione di una matrice (n x m) per una matrice (m x k)?
+ognuna delle celle della nuova matrice nxk avrá al suo interno una addizione tra elementi provenienti da m moltiplicazioni. O(n*m*k)   
+
+>> Sia dato un array ordinato A che memorizza solo 0 e 1, tale che ogni zero appare in una componente prima di componenti che memorizzano 1; in altre parole l’array è del tipo {0, 0, 0, ..., 0, 0, 1, 1, ..., 1,1,1}. Progetta un algoritmo che trova la componente più piccola tale che A[i] = 1 e abbia costo O(log n) nel caso peggiore (n rappresenta il numero degli elementi dell’array).
+Si applica la ricerca binaria (infatti l'array é ordinato)
+int binSearch(bool[] A, int start, int end) {
+	if (start > end) return -1;
+	int i = (start+end)/2;
+	if (A[i] == 1 && A[i-1] == 0) return i;
+	
+	if (A[i] == 1) {
+		return binSearch(A, start, mid-1);
+	} else {
+		return binSearch(A, mid+1, end);
+	}
+}
+
+>> Definire il concetto di numerabilità (o equivalentemente contabilità) e mostrare utilizzando la tecnica della diagonalizzazione che l'insieme dei linguaggi sull'alfabeto {0, 1} non è numerabile.
+un insieme si dice numerabile sse ha cardinalitá pari all'insieme N dei naturali. Piú intuitivamente un insieme é numerabile se tutti i suoi elementi possono essere ordinati tra loro e "messi in fila". 
+Se l'insieme fosse numerabile allora tutti i linguaggi formati da 0 e 1 potrebbero essere "messi in fila" sulle ascisse di una matrice, mentre sulle ordinate ci potrebbero essere tutte le possibili stringhe formate sull'alfabeto {0,1}. Adesso creiamo un nuovo linguaggio per il quale le stringhe accettate sono quelle che sulla diagonale di questa matrice sono rifiutate e tutte le stringhe rifiutate sono tutte quelle accettate. Questo linguaggio non puó essere nessuno di quelli prima messi in in fila (perché differisce per almeno un elemento) , e quindi i linguaggi non possono essere tutti, e quindi i linguaggi non sono numerabili. 
+
+>> Mostra che l'insieme delle Macchine di Turing é Numerabile
+(SE I TIPO 3 FOSSERO NUMERABILI) MdT => automa => linguaggio tipo 3
+
+
+>> Quante sono le possibili macchine di Turing con alfabeto binario e 4 stati?
+(Assumo si parli di MdT deterministiche) Ogni stato avrá solo 2 bracci uscenti, uno per 1 e uno per 0, ognuno di questi bracci puó andare in uno dei 4 stati (compreso quello di partenza) o potrebbe anche non esistere affatto, quindi per ogni braccio ci sono 5 possibilitá. questo significa che per ogni stato ci sono 25 possibili combinazioni visto che i bracci sono 2. ognuno degli stati ha 25 possibili forme, e gli stati sono distinguibili tra loro, quindi il totale delle possibili combinazioni é 25^4 => 5^8
+	
+>> Assumi che i linguaggi B e C siano decidibili (cioè dato x esistono due algoritmi A1 e A2 che decidono se x appartiene a B e se x appartiene a C rispettivamente). Mostra che anche
+B U C (linguaggio unione) , B ∩ C (linguaggio intersezione),
+B \ C (linguaggio differenza formato dalle stringhe che appartengono a B ma non a C)
+B*
+sono linguaggi decidibili.
+> Un algoritmo che decide un linguaggio significa che é capace di riconoscere se una certa stringa L appartiene o meno al linguaggio. Se vediamo questo algoritmo come una funzione booleana A(stringa s) che ritorna true se la stringa s appartiene 
+Il linguaggio Unione é deciso da una concatenazione degli algoritmi A1 e A2 (A1(s) || A2(s))
+Il linguaggio intersezione é deciso da una concatenazione di A1 e A2 (cioé A1(s) && A2(s))
+Il linguaggio differenza é deciso da A1(s) && !A2(s)
+Il linguaggio chiusura di Klein é deciso da:
+int j=0;
+for (int i=0; i<s.length; i++) {
+	if (A1(s[j, i])) {
+		j = i;
+	}
+}
+return j==s.length;
+
+>> Dimostra che il seguente insieme è decidibile {B: B è la codifica di un automa a stati finiti deterministico che non accetta nessuna stringa}
+Un insieme é decidibile se esiste un algoritmo che lo riconosce. Gli automi a stati finiti non sono altro che grafi, quindi basta implementare un qualsiasi algoritmo di esplorazione di grafi (DFS, BFS ecc) per verificare se il nodo d'inizio esplora e raggiunge anche almeno un nodo che accetta (finale).
+
+
+>> Fornire una  grammatica non ambigua per generare il linguaggio delle espressioni aritmetiche avente cinque simboli terminali: id (che rappresenta un identificatore), i simboli di operazione + e – e le parentesi tonde ( e ). Ovviamente la grammatica deve generare tutte e sole le stringhe che sono corrette (ad esempio non deve generare la stringa id+((id-id) o la stringa id++id-id.
+> 
+E ->  TQ 	(Assioma)
+T ->  id | (E)
+Q -> +TQ | -TQ | lambda
+
+>>Motivare inoltre perché questo linguaggio non può essere generato da una grammatica di tipo 3.
+> Per le parentesi, infatti i linguaggi di tipo 3 non riescono a tenere "memoria" di quante parentesi abbiano messo prima, e quindi non sanno quante ne devono mettere dopo. tutti i linguaggi tipo { a^n b^n | n>0 } non possono essere generati da grammatiche di tipo 3 perché richiedono di "contare" quante parentesi aperte vengono prima per capire qunate ne andranno messe dopo. 
+
+>> Quali sono le proprietà di una grammatica LL(1) e per quale ragione sono molto adatte per descrivere i linguaggi di programmazione?
+> Perché sono ottimali per implementare parser top-down predittivi che hanno bisogno di analizzare un un singolo carattere per decidere quale produzione applicare. Quindi ad esempio una codice di n caratteri puó essere riconosciuto in tempo O(n)
+
+>> L1={ 0^m 1^n con n≠m, n,m>0}
+L2 ={ a^m b^n c^p d^q con m+n = p+q>0}
+Sugg. Parti da grammatica per L = { 0n1n con n>0}
+L1> 
+S-> 0T | E1
+T -> 0T1 | 0T | 0
+E -> 0E1 | E1 | 1
+L2>
+S -> aSd | ad | T | P | Q
+P -> aPc | ac | Q
+T -> bTd | bd | Q
+Q -> bTc | bc
+
+
+
+ 
+
+
+	
+
+
+
+ 
+
+
+
+
+
+
+
+

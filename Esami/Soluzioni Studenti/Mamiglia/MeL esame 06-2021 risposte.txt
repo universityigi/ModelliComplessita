@@ -1,0 +1,70 @@
+1>> Con riferimento al linguaggio L = {(0+1)* | 1 é sempre seguito da 010}
+	a>> Scrivere unu opportuno automa che riconosce tutte e sole le stringhe che appartengono al linguaggio
+	b>> Scrivere una grammatica del tipo piú alto possibile che riconosce L
+	c>> determinare una espressione regolare
+a>
+b> tipo 3:
+S -> 0S | 1T
+T -> 0U 
+U -> 1V
+V -> 0S
+c> (0|1010)*
+
+2>> Definire la notazione Omega(). Spiegare il significato dell'affermazione: "Il problema P ha complessitá Omega( n logn )"
+> La notazione Omega si utilizza per definire il Limite Asintotico Inferiore. Cioé f(n) appartiene a Omega(g(n)) iff f(n) >= a*g(n) + b per n>n0, con a e b cost. positive. Sostanzialmente é utile per sottolineare che una certa funzione ha un grado asintotico maggiore di quello in Omega(g).
+L'affermazione quindi significa che il problema P ha una complessitá che potrebbe essere: nlogn, n^2, n^3 ... n^k, k^n ecc..
+
+3>>
+	a> Dare una definizione di MdT
+	b> Assumi che una MdT debba calcolare una funzione dei dati presenti all'inizio del nastro, cosa fa la MdT in figura? C'é una configurazione finale? Qual'é? 
+a> Una MdT é una macchina composta da tre elementi principali:
+- un nastro bidirezionale infinito diviso in celle in cui in ognuna c'é un simbolo dell'alfabeto scelto
+- una testina che permette di leggere il nastro e di spostarsi di una casella a destra o sinistra
+- un automa a stati finiti che si aggiorna in base all'input letto
+In generale una macchina di turing puó essere quindi definito da un alfabeto S, un insieme di stati Q, una funzione di transizione d(Q, S) = <next stato; simbolo da scrivere; spostamento dx/sx>
+Quindi ad ogni turno la MdT leggerá un input, in base alla funzione di transizione deciderá in quale stato spostare l'automa, se scrivere qualcosa sul nastro, se spostarsi sul nastro a dx/sx
+b> La MdT in figura riconosce se il numero di 1 é pari o dispari. Se pari scrive 1 se dispari scrive 0 alla fine della stringa di numeri (che finisce con un blank) 
+
+
+4>> Si consideri la seguente grammatica con un solo simbolo non terminale
+				S -> SaS | SbS | c
+	a> Fornire la sequenza di derivazioni della stringa cacbc
+	b> Definire (anche ricorsivamente) il linguaggio generato dalla grammatica
+	c> Stabilire se la grammatica é ambigua. Se si, quali interventi si possono fare per eliminare il problema?
+a> S -> SaS -> caS -> caSbS -> cacbS -> cacbc
+b> ( c (a|b) )* c. Linguaggio in cui ad uno si e uno no ci sta una c e nell'altro o a o b e la stringa inizia e finisce con c
+c> Si la grammatica é ambigua, anche per la stringa cacbc infatti alternativamente si poteva fare: S -> SbS -> SaSbS -> caSbS -> cacbS -> cacbc
+Senza ambiguitá: 
+S -> caS | cbS | c
+
+5>> Determinare l’insieme dei FIRST e dei FOLLOWER della seguente grammatica:
+S -> aSTU | ST | ε
+T -> baT | abU | ε
+U -> babS | c
+La grammatica risulta LL(1)?
+S: FIRST(aSTU) = {a}; FIRST(epsilon) = {lambda}; FIRST(ST) = FIRST(S) U FIRST(T) = { a, b, lambda } !!!non é LL(1)
+T: FIRSt(baT) = {b}; FIRST(abU) = {a}; FIRST(epsilon) = {lambda}; 
+U: FIRST(babS) = {b}; FIRST(c) = {c};
+
+FIRST(S) = {a, b, lambda}
+FIRST(T) = {a, b, lambda}
+FIRST(U) = {b, c}
+
+FOLLOWER(S) = FIRST(T)-l U FOLLOWER(U) U $ U FIRST(U) = {a, b, c, $}
+FOLLOWER(T) = FIRST(U) U FOLLOWER(T) U FOLLOWER(S) = {a, b, c, $}
+FOLLOWER(U) = FOLLOWER(T) U FOLLOWER(S) = {a, b, c, $}
+
+6>> 
+	a>>Se qualcuno riuscisse a provare che NP ⊇ P (strettamente), cosa possiamo dire sui problemi della classe NP\P?
+	b>>Sapendo che 3CNF è NP-completo come posso utilizzare questo fatto per dimostrare che un altro problema è NP-completo? Fornire un esempio a vostra scelta.
+a> Potremmo dire che sono risolvibili in tempo polinomiale solo da MdT non deterministiche, quindi con macchine determinstiche solo in tempo esponenziale
+b> devo ridurre 3CNF al problema in questione (e cosí dimostro che i problema é NP-hard) e riduco il problema a 3CNF (cosí dimostro che é alpiú NP-complete) => quindi il problema é NP-complete.
+
+
+
+7>> llustrare la tesi di Church-Turing, Spiegare se l’equivalenza stabilita nella tesi si applica anche agli automi a stati finiti
+> La Tesi di Church-Turing dice che: "Tutto quello che si puó calcolare lo si puó calcolare usando una Macchina di Turing o un sistema Turing-equivalente". É una tesi molto importante perché implica che ogni sistema mai creato (e creabile) é al massimo Turing-equivalente compresi tutti i nuovi linguaggi di programmazione. Quindi implica che tutti i sistemi di calcolo sono equipotenti: MdT, lambda calcolo, C , Java, python ecc...
+L'equivalenza non vale per gli automi a stati finiti perché questi non hanno memoria infinita come invece ce l'ha la MdT
+
+
+
